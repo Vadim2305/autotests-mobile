@@ -33,6 +33,7 @@ public class Calculator {
 
         //Set up desired capabilities and pass the Android app-activity and app-package to Appium
         DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("BROWSER_NAME", "Android");
 
         switch (browser){
             case ANDROID_MOBILE:
