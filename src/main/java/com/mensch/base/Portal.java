@@ -6,20 +6,15 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.Assert;
 
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public enum Portal {
+public class Portal {
 
-    INSTANCE(Constants.DEFAULT_IMPLICIT_WAIT_INTERVAL);
     WebDriver driver;
-
-
-    //Enums.BrowserType browser = Enums.BrowserType.ANDROID_MOBILE;
-    Enums.BrowserType browser = Enums.BrowserType.ANDROID_EMULATOR;
-
 
     private final long timeoutSeconds;
 
@@ -27,7 +22,7 @@ public enum Portal {
         this.timeoutSeconds = timeout;
     }
 
-    public void openPage() {
+    public WebDriver openDriver(Enums.BrowserType browser, String udid, String appiumPort) {
 
         //Set up desired capabilities and pass the Android app-activity and app-package to Appium
         DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -49,7 +44,8 @@ public enum Portal {
                 capabilities.setCapability("deviceName","Asus_M2_Emu");
                 capabilities.setCapability("platformName","Android");
                 capabilities.setCapability("automationName", "UiAutomator1");
-                capabilities.setCapability("udid", "emulator-5554");
+                capabilities.setCapability("udid", udid);
+                //capabilities.setCapability("systemPort", "8201");
                 capabilities.setCapability("appPackage", "com.android.calculator2");
                 capabilities.setCapability("appActivity","com.android.calculator2.Calculator");
                 break;
@@ -59,11 +55,13 @@ public enum Portal {
         //It will launch the Calculator App in Android Device using the configurations specified in Desired Capabilities
         //driver = new RemoteWebDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
         try {
-            driver = new AndroidDriver<MobileElement>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+            driver = new AndroidDriver<MobileElement>(new URL("http://127.0.0.1:"+appiumPort+"/wd/hub"), capabilities);
         }
         catch (Exception e) {
             System.out.println("Driver error");
+            Assert.fail();
         }
+        return driver;
     }
 
     public void tearDown(){
@@ -73,8 +71,7 @@ public enum Portal {
             System.out.println("Driver error preventing from Quitting.");
             ex.printStackTrace();
         }
-        //FileUtils.cleanDownloadDir();
-        driver = null;
+
     }
 
 
@@ -86,8 +83,5 @@ public enum Portal {
         return driver;
     }
 
-    public Enums.BrowserType getBrowser() {
-        return browser;
-    }
 
 }
