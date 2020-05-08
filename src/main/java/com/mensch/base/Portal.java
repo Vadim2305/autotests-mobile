@@ -68,7 +68,6 @@ public enum Portal {
 
     public void tearDown(){
         try {
-            driver.close();
             driver.quit();
         } catch (Throwable ex) {
             System.out.println("Driver error preventing from Quitting.");
