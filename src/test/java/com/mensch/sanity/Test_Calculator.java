@@ -10,18 +10,20 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import lombok.extern.log4j.Log4j2;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 //import org.openqa.selenium.remote.CapabilityType;
 
-
+@Log4j2
 public class Test_Calculator extends TestBase {
 
     @Test(groups = {"sanity-include", "system-include", "Dev1"})
     public void testCal() {
 
+        log.info("test123");
         String twoId = null;
         String plusId= null;
         String fourId= null;
