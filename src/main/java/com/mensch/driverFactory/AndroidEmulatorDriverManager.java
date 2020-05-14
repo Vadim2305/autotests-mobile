@@ -2,11 +2,13 @@ package com.mensch.driverFactory;
 
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 
 import java.net.URL;
 
+@Log4j2
 public class AndroidEmulatorDriverManager extends DriverManager {
 
     @Override
@@ -27,7 +29,7 @@ public class AndroidEmulatorDriverManager extends DriverManager {
             driver = new AndroidDriver<MobileElement>(new URL("http://127.0.0.1:"+appiumPort+"/wd/hub"), capabilities);
         }
         catch (Exception e) {
-            System.out.println("Driver error");
+            log.error("Driver error");
             Assert.fail();
         }
     }

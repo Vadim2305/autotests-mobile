@@ -4,6 +4,7 @@ import com.mensch.def.Constants;
 import com.mensch.def.Enums;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
@@ -12,6 +13,7 @@ import org.testng.Assert;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@Log4j2
 public class Portal {
 
     WebDriver driver;
@@ -58,7 +60,7 @@ public class Portal {
             driver = new AndroidDriver<MobileElement>(new URL("http://127.0.0.1:"+appiumPort+"/wd/hub"), capabilities);
         }
         catch (Exception e) {
-            System.out.println("Driver error");
+            log.error("Driver error");
             Assert.fail();
         }
         return driver;
@@ -68,7 +70,7 @@ public class Portal {
         try {
             driver.quit();
         } catch (Throwable ex) {
-            System.out.println("Driver error preventing from Quitting.");
+            log.error("Driver error preventing from Quitting.");
             ex.printStackTrace();
         }
 
