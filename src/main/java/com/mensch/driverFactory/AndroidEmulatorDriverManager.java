@@ -1,5 +1,6 @@
 package com.mensch.driverFactory;
 
+import com.mensch.def.Constants;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import lombok.extern.log4j.Log4j2;
@@ -22,8 +23,11 @@ public class AndroidEmulatorDriverManager extends DriverManager {
         capabilities.setCapability("automationName", "UiAutomator1");
         capabilities.setCapability("udid", udid);
         //capabilities.setCapability("systemPort", "8201");
-        capabilities.setCapability("appPackage", "com.android.calculator2");
-        capabilities.setCapability("appActivity","com.android.calculator2.Calculator");
+        capabilities.setCapability("app", Constants.APP_PATH);
+        capabilities.setCapability("appPackage", "org.nativescript.Mensch");
+        capabilities.setCapability("appActivity","com.tns.NativeScriptActivity");
+//        capabilities.setCapability("appPackage", "com.android.calculator2");
+//        capabilities.setCapability("appActivity","com.android.calculator2.Calculator");
 
         try {
             driver = new AndroidDriver<MobileElement>(new URL("http://127.0.0.1:"+appiumPort+"/wd/hub"), capabilities);

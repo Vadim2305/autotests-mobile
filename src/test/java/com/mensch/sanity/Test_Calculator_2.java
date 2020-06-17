@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 public class Test_Calculator_2 extends TestBase {
 
     @Test(groups = {"sanity-include", "system-include", "Dev2"})
-    public void testCal() {
+    public void testCal_2() {
 
         String twoId = null;
         String threeId = null;

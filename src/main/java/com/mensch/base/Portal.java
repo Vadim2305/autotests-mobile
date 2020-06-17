@@ -15,14 +15,11 @@ import java.net.URL;
 
 @Log4j2
 public class Portal {
+    /*-------------------------------------------*/
+    //Look for settings in driverFactory package
+    /*-------------------------------------------*/
 
-    WebDriver driver;
-
-    private final long timeoutSeconds;
-
-    Portal(long timeout) {
-        this.timeoutSeconds = timeout;
-    }
+/*    WebDriver driver;
 
     public WebDriver openDriver(Enums.BrowserType browser, String udid, String appiumPort) {
 
@@ -77,13 +74,9 @@ public class Portal {
     }
 
 
-    public long getTimeoutSeconds() {
-        return timeoutSeconds;
-    }
-
     public WebDriver getDriver() {
         return driver;
-    }
+    }*/
 
 
 }

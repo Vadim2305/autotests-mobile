@@ -4,6 +4,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Constants {
 
+    public static final String APP_PATH = "C:\\wamp\\appium\\apk\\app-debug.apk";
+
     public static final int MAX_RETRY_FAILED_TESTS = 3;
 
     public static final int DEFAULT_TIMEOUT = 60;
