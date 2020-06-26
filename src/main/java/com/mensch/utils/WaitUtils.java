@@ -13,18 +13,21 @@ import java.util.concurrent.TimeUnit;
 import com.mensch.def.Constants;
 
 
-public class WaitUtils extends TestBase {
+public class WaitUtils {
 
 	TestUtils testUtils;
 
+	private WebDriver driver;
 	private int maxRetries=3;
 
 	public final String ALL_SPINNERS = "//*[@id='loading-bar' or @class='bar-wrapper' or @class='splash' or @class='spinner-path' or @class='spinner-small' or @class='splash hideaway']";
 
+	public WaitUtils(WebDriver driver) {
+		this.driver = driver;
+	}
 
-
-	public void waitForSec (long sec) {
-		testUtils.logTime("waitForSec",
+	public static void waitForSec (long sec) {
+		TestUtils.logTime("waitForSec",
 				() -> {
 					long seconds = sec * 1000;
 					try {
@@ -36,16 +39,16 @@ public class WaitUtils extends TestBase {
 				});
 	}
 
-	public void waitFor(String xp, int timeOut, TimeUnit timeUnit) {
-		waitFor(By.xpath(xp), timeOut, timeUnit);
+	public static void waitFor(String xp, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		waitFor(By.xpath(xp), timeOut, timeUnit, driver);
 	}
 
-	public void waitFor(String xp) {
-		waitFor(By.xpath(xp), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitFor(String xp, WebDriver driver) {
+		waitFor(By.xpath(xp), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitFor(final By by) {
-		waitFor(by, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitFor(final By by, WebDriver driver) {
+		waitFor(by, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
 	/**
@@ -55,8 +58,8 @@ public class WaitUtils extends TestBase {
 	 * @param timeUnit
 	 * Differs with waitForClickable: does not check for element.isEnabled(), only for element.isDisplayed()
 	 */
-	public void waitFor(final By by, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime(by.toString(),
+	public static void waitFor(final By by, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime(by.toString(),
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.ignoring(WebDriverException.class)
@@ -66,7 +69,7 @@ public class WaitUtils extends TestBase {
 							@Override
 							public WebElement apply(WebDriver driver) {
 								WebElement element = driver.findElement(by);
-								testUtils.highlightElement(element);
+								//TestUtils.highlightElement(element, driver);
 								return (element != null && element.isDisplayed()) ? element : null;
 							}
 						}));
@@ -79,8 +82,8 @@ public class WaitUtils extends TestBase {
 	 * @param timeUnit
 	 * Differs with waitForClickable: does not check for element.isEnabled(), only for element.isDisplayed()
 	 */
-	public void waitFor(WebElement element, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime("WaitFor",
+	public static void waitFor(WebElement element, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime("WaitFor",
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.ignoring(WebDriverException.class)
@@ -94,20 +97,20 @@ public class WaitUtils extends TestBase {
 						}));
 	}
 
-	public void waitForAnimationFinish(final String xPath) {
-		waitForAnimationFinish(xPath, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitForAnimationFinish(final String xPath, WebDriver driver) {
+		waitForAnimationFinish(xPath, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitForAnimationFinish(final String xPath, int timeOut, TimeUnit timeUnit) {
-		waitForAnimationFinish(By.xpath(xPath));
+	public static void waitForAnimationFinish(final String xPath, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		waitForAnimationFinish(By.xpath(xPath), driver);
 	}
 
-	public void waitForAnimationFinish(final By by) {
-		waitForAnimationFinish(by, Constants.DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+	public static void waitForAnimationFinish(final By by, WebDriver driver) {
+		waitForAnimationFinish(by, Constants.DEFAULT_TIMEOUT, TimeUnit.SECONDS, driver);
 	}
 
-	public void waitForAnimationFinish(final By by, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime(by.toString(),
+	public static void waitForAnimationFinish(final By by, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime(by.toString(),
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.ignoring(WebDriverException.class)
@@ -117,8 +120,8 @@ public class WaitUtils extends TestBase {
 	}
 
 
-	public void waitForNewTab(int expectedTabsCount, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime("waitForNewTab",
+	public static void waitForNewTab(int expectedTabsCount, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime("waitForNewTab",
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
@@ -138,8 +141,8 @@ public class WaitUtils extends TestBase {
 	 * @param timeUnit
 	 * @return index of found element in the list. In case no element was found = returns -1.
 	 */
-	public int waitForClickableOneFromList(final By[] bys, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime(bys.toString(),
+	public static int waitForClickableOneFromList(final By[] bys, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime(bys.toString(),
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
@@ -162,7 +165,7 @@ public class WaitUtils extends TestBase {
 								return (element != null && element.isDisplayed() && element.isEnabled()) ? element : null;
 							}
 						}));
-		return (testUtils.logTime("Decoding list", () -> {
+		return (TestUtils.logTime("Decoding list", () -> {
 			boolean found = false;
 			int i = 0;
 			while (i < bys.length && !found) {
@@ -182,8 +185,8 @@ public class WaitUtils extends TestBase {
 	}
 
 
-	public void waitForClickable(final By by, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime(by.toString(),
+	public static void waitForClickable(final By by, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime(by.toString(),
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.ignoring(WebDriverException.class)
@@ -193,71 +196,74 @@ public class WaitUtils extends TestBase {
 					@Override
 					public WebElement apply(WebDriver driver) {
 						WebElement element = driver.findElement(by);
-						testUtils.highlightElement(element);
+						//TestUtils.highlightElement(element, driver);
 						return (element != null && element.isDisplayed() && element.isEnabled()) ? element : null;
 					}
 				}));
 	}
 
-	public void waitForClickable(final By by, int timeOut) {
-		waitForClickable(by, timeOut, TimeUnit.SECONDS);
+	public static void waitForClickable(final By by, int timeOut, WebDriver driver) {
+		waitForClickable(by, timeOut, TimeUnit.SECONDS, driver);
 	}
 
-	public void waitForClickable(final By by) {
-		waitForClickable(by, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitForClickable(final By by, WebDriver driver) {
+		waitForClickable(by, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitForClickable(String xpath) {
-		waitForClickable(By.xpath(xpath));
+	public static void waitForClickable(String xpath, WebDriver driver) {
+		waitForClickable(By.xpath(xpath), driver);
 	}
 
-	public void waitForClickable(String xpath, int timeOut) {
-		waitForClickable(By.xpath(xpath), timeOut);
+	public static void waitForClickable(String xpath, int timeOut, WebDriver driver) {
+		waitForClickable(By.xpath(xpath), timeOut, driver);
 	}
 
-	public void waitForClickable(String xpath, int timeOut, TimeUnit timeUnit) {
-		waitForClickable(By.xpath(xpath), timeOut, timeUnit);
+	public static void waitForClickable(String xpath, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		waitForClickable(By.xpath(xpath), timeOut, timeUnit, driver);
 	}
 
-	public void waitAndClick(String xpath){
-		waitAndClick(By.xpath(xpath), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndClick(String xpath, WebDriver driver){
+		waitAndClick(By.xpath(xpath), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndClick(By by){
-		waitAndClick(by, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndClick(By by, WebDriver driver){
+		waitAndClick(by, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndClick(By by, int timeOut){
-		waitAndClick(by, timeOut, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndClick(By by, int timeOut, WebDriver driver){
+		waitAndClick(by, timeOut, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndClick(String xpath, int timeOut){
-		waitAndClick(By.xpath(xpath), timeOut, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndClick(String xpath, int timeOut, WebDriver driver){
+		waitAndClick(By.xpath(xpath), timeOut, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndClick(final WebElement webElement, int timeOut){
-		waitAndClick(webElement, timeOut, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndClick(final WebElement webElement, int timeOut, WebDriver driver){
+		waitAndClick(webElement, timeOut, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndClick(final WebElement webElement){
-		waitAndClick(webElement, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndClick(final WebElement webElement, WebDriver driver){
+		waitAndClick(webElement, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndClick(final WebElement webElement, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime("waitAndClick",
+	public static void waitAndClick(final WebElement webElement, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime("waitAndClick",
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
 						.ignoring(WebDriverException.class)
-						.until((Function<WebDriver, WebElement>) driver -> {
-							testUtils.highlightElement(webElement);
-							webElement.click();
-							return (webElement);
+						.until(new Function<WebDriver, WebElement>() {
+							@Override
+							public WebElement apply(WebDriver driver) {
+								//TestUtils.highlightElement(webElement, driver);
+								webElement.click();
+								return (webElement);
+							}
 						}));
 	}
 
-	public void waitAndClick(final By by, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime(by.toString(),
+	public static void waitAndClick(final By by, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime(by.toString(),
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
@@ -267,27 +273,27 @@ public class WaitUtils extends TestBase {
 							@Override
 							public WebElement apply(WebDriver driver) {
 								WebElement element = driver.findElement(by);
-								testUtils.highlightElement(element);
+								//TestUtils.highlightElement(element, driver);
 								element.click();
 								return (element);
 							}
 						}));
 	}
 
-	public void waitAndClickInvisible(String xpath){
-		waitAndClickInvisible(By.xpath(xpath), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndClickInvisible(String xpath, WebDriver driver){
+		waitAndClickInvisible(By.xpath(xpath), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndClickInvisible(String xpath, int timeOut){
-		waitAndClickInvisible(By.xpath(xpath), timeOut, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndClickInvisible(String xpath, int timeOut, WebDriver driver){
+		waitAndClickInvisible(By.xpath(xpath), timeOut, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndClickInvisible(WebElement element){
-		waitAndClickInvisible(element, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndClickInvisible(WebElement element, WebDriver driver){
+		waitAndClickInvisible(element, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndClickInvisible(WebElement element, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime("",
+	public static void waitAndClickInvisible(WebElement element, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime("",
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
@@ -296,15 +302,15 @@ public class WaitUtils extends TestBase {
 						.until(new Function<WebDriver, WebElement>() {
 							@Override
 							public WebElement apply(WebDriver driver) {
-								testUtils.clickInvisible(element);
+								TestUtils.clickInvisible(element, driver);
 								return (element);
 							}
 						}));
 	}
 
 
-	public void waitAndClickInvisible(final By by, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime(by.toString(),
+	public static void waitAndClickInvisible(final By by, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime(by.toString(),
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
@@ -314,25 +320,25 @@ public class WaitUtils extends TestBase {
 							@Override
 							public WebElement apply(WebDriver driver) {
 								WebElement element = driver.findElement(by);
-								testUtils.clickInvisible(element);
+								TestUtils.clickInvisible(element, driver);
 								return (element);
 							}
 						}));
 	}
 
-	public void waitAndType(final By by, String text) {
-		waitAndType(by, text, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndType(final By by, String text, WebDriver driver) {
+		waitAndType(by, text, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
-	public void waitAndType(final By by, String text, int timeout) {
-		waitAndType(by, text, timeout, Constants.DEFAULT_TIMEOUT_UNIT);
-	}
-
-	public void waitAndType(final TextField element, String text) {
-		waitAndType(element, text, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAndType(final By by, String text, int timeout, WebDriver driver) {
+		waitAndType(by, text, timeout, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAndType(final By by, String text, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime(by.toString(),
+	public static void waitAndType(final TextField element, String text, WebDriver driver) {
+		waitAndType(element, text, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
+	}
+
+	public static void waitAndType(final By by, String text, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime(by.toString(),
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
@@ -342,7 +348,7 @@ public class WaitUtils extends TestBase {
 							@Override
 							public WebElement apply(WebDriver driver) {
 								WebElement element = driver.findElement(by);
-								testUtils.highlightElement(element);
+								//TestUtils.highlightElement(element, driver);
 								element.clear();
 								element.sendKeys(text);
 								return (element);
@@ -350,8 +356,8 @@ public class WaitUtils extends TestBase {
 						}));
 	}
 
-	public void waitAndType(final TextField element, String text, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime("waitAndType",
+	public static void waitAndType(final TextField element, String text, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime("waitAndType",
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
@@ -360,14 +366,14 @@ public class WaitUtils extends TestBase {
 						.until(new Function<WebDriver, TextField>() {
 							@Override
 							public TextField apply(WebDriver driver) {
-								element.clearAndType(text);
+								element.clearAndType(text, driver);
 								return (element);
 							}
 						}));
 	}
 
-	public void waitAndExpand(final By by, final By optionsBy, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime("waitAndType",
+	public static void waitAndExpand(final By by, final By optionsBy, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime("waitAndType",
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
@@ -377,7 +383,7 @@ public class WaitUtils extends TestBase {
 							@Override
 							public Boolean apply(WebDriver driver) {
 								WebElement element = driver.findElement(by);
-								testUtils.highlightElement(element);
+								//TestUtils.highlightElement(element, driver);
 								element.click();
 								List<WebElement>options = driver.findElements(optionsBy);
 								return (options.size() != 0);
@@ -385,28 +391,28 @@ public class WaitUtils extends TestBase {
 						}));
 	}
 
-	public void waitAndExpand(final String xPath, final String optionsXPath, int timeOut, TimeUnit timeUnit) {
-		waitAndExpand(By.xpath(xPath), By.xpath(optionsXPath), timeOut, timeUnit);
+	public static void waitAndExpand(final String xPath, final String optionsXPath, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		waitAndExpand(By.xpath(xPath), By.xpath(optionsXPath), timeOut, timeUnit, driver);
 	}
 
-	public void waitAndExpand(final String xPath, final String optionsXPath) {
-		waitAndExpand(By.xpath(xPath), By.xpath(optionsXPath), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
-	}
-
-
-	public void waitAndClickExpandWithAnimation(final By by, final By optionsBy) {
-		waitAndClick(by);
-		waitForAnimationFinish(optionsBy);
-		waitAndClick(optionsBy);
-	}
-
-	public void waitAndClickExpandWithAnimation(final String xPath, final String optionsXPath) {
-		waitAndClickExpandWithAnimation(By.xpath(xPath), By.xpath(optionsXPath));
+	public static void waitAndExpand(final String xPath, final String optionsXPath, WebDriver driver) {
+		waitAndExpand(By.xpath(xPath), By.xpath(optionsXPath), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
 
+	public static void waitAndClickExpandWithAnimation(final By by, final By optionsBy, WebDriver driver) {
+		waitAndClick(by, driver);
+		waitForAnimationFinish(optionsBy, driver);
+		waitAndClick(optionsBy, driver);
+	}
 
-	private String getXPath(WebElement webElement) {
+	public static void waitAndClickExpandWithAnimation(final String xPath, final String optionsXPath, WebDriver driver) {
+		waitAndClickExpandWithAnimation(By.xpath(xPath), By.xpath(optionsXPath), driver);
+	}
+
+
+
+	private static String getXPath(WebElement webElement, WebDriver driver) {
 		String js = "function getPathTo(node) {" +
 				"  var stack = [];" +
 				"  while(node.parentNode !== null) {" +
@@ -419,61 +425,70 @@ public class WaitUtils extends TestBase {
 		return ((JavascriptExecutor) driver).executeScript(js, webElement).toString().toLowerCase();
 	}
 
-	public void waitTextAppears(String xp) {
-		waitTextAppears(By.xpath(xp), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitTextAppears(String xp, WebDriver driver) {
+		waitTextAppears(By.xpath(xp), Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitTextAppears(final By by, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime("WaitTextAppears",
+	public static void waitTextAppears(final By by, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime("WaitTextAppears",
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
 						.ignoring(WebDriverException.class)
 						.ignoring(NoSuchElementException.class)
-						.until((Function<WebDriver, Boolean>) driver -> {
-							WebElement element = driver.findElement(by);
-							testUtils.highlightElement(element);
-							return !element.getText().isEmpty();
+						.until(new Function<WebDriver, Boolean>() {
+							@Override
+							public Boolean apply(WebDriver driver) {
+								WebElement element = driver.findElement(by);
+								//TestUtils.highlightElement(element, driver);
+								return !element.getText().isEmpty();
+							}
 						}));
 	}
 
-	public void waitItemDelete(String xp, int sizeExpected) {
-		waitItemDelete(By.xpath(xp), sizeExpected, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitItemDelete(String xp, int sizeExpected, WebDriver driver) {
+		waitItemDelete(By.xpath(xp), sizeExpected, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitItemDelete(final By by, int sizeExpected, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime("checkItemDeleted",
+	public static void waitItemDelete(final By by, int sizeExpected, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime("checkItemDeleted",
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
 						.ignoring(WebDriverException.class)
 						.ignoring(NoSuchElementException.class)
-						.until((Function<WebDriver, Boolean>) driver -> {
-							List<WebElement> elements = driver.findElements(by);
-							return (elements.size()==sizeExpected);
+						.until(new Function<WebDriver, Boolean>() {
+							@Override
+							public Boolean apply(WebDriver driver) {
+								List<WebElement> elements = driver.findElements(by);
+								return (elements.size() == sizeExpected);
+							}
 						}));
 	}
 
-	public void waitAllItems(String xp) {
-		waitAllItems(By.xpath(xp), 10, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAllItems(String xp, WebDriver driver) {
+		waitAllItems(By.xpath(xp), 10, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAllItems(String xp, long deltaRecheck) {
-		waitAllItems(By.xpath(xp), deltaRecheck, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT);
+	public static void waitAllItems(String xp, long deltaRecheck, WebDriver driver) {
+		waitAllItems(By.xpath(xp), deltaRecheck, Constants.DEFAULT_TIMEOUT, Constants.DEFAULT_TIMEOUT_UNIT, driver);
 	}
 
-	public void waitAllItems(final By by, long deltaRecheck, int timeOut, TimeUnit timeUnit) {
-		testUtils.logTime("checkAllItems",
+	public static void waitAllItems(final By by, long deltaRecheck, int timeOut, TimeUnit timeUnit, WebDriver driver) {
+		TestUtils.logTime("checkAllItems",
 				() -> new FluentWait<>(driver)
 						.withTimeout(timeOut, timeUnit)
 						.pollingEvery(Constants.DEFAULT_POLLING_INTERVAL, Constants.DEFAULT_POLLING_UNIT)
 						.ignoring(WebDriverException.class)
 						.ignoring(NoSuchElementException.class)
-						.until((Function<WebDriver, Boolean>) driver -> {
-							List<WebElement> elementsBefore = driver.findElements(by);
-							waitForSec(deltaRecheck);
-							List<WebElement> elementsAfter = driver.findElements(by);
-							return (elementsAfter.size()-elementsBefore.size()==0);
+						.until(new Function<WebDriver, Boolean>() {
+							@Override
+							public Boolean apply(WebDriver driver) {
+								List<WebElement> elementsBefore = driver.findElements(by);
+								waitForSec(deltaRecheck);
+								List<WebElement> elementsAfter = driver.findElements(by);
+								return (elementsAfter.size() - elementsBefore.size() == 0);
+							}
 						}));
 	}
 

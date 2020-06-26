@@ -3,27 +3,29 @@ package com.mensch.decorator.elements.impl;
 import com.mensch.decorator.elements.Checkbox;
 import com.mensch.utils.TestUtils;
 import com.mensch.utils.WaitUtils;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.concurrent.TimeUnit;
 
 public class CheckboxImpl extends AbstractElement implements Checkbox {
 
-	TestUtils testUtils;
 	CheckboxImpl(final WebElement wrappedElement) {
 		super(wrappedElement);
 	}
 
 	@Override
 	public void click() {
-		testUtils.highlightElement(wrappedElement);
+		//WebDriver driver = (WebDriver)wrappedElement;
+		//testUtils.highlightElement(wrappedElement, driver);
 		wrappedElement.click();
 	}
 
 	@Override
-	public void clickInvisible() {
-		testUtils.highlightElement(wrappedElement);
-		testUtils.clickInvisible(wrappedElement);
+	public void clickInvisible(WebDriver driver) {
+		//WebDriver driver = (WebDriver)wrappedElement;
+		//testUtils.highlightElement(wrappedElement, driver);
+		TestUtils.clickInvisible(wrappedElement, driver);
 	}
 
 	@Override
@@ -33,7 +35,8 @@ public class CheckboxImpl extends AbstractElement implements Checkbox {
 
 	@Override
 	public boolean isSelected() {
-		testUtils.highlightElement(wrappedElement);
+		//WebDriver driver = (WebDriver)wrappedElement;
+		//testUtils.highlightElement(wrappedElement, driver);
 		return wrappedElement.isSelected();
 	}
 }

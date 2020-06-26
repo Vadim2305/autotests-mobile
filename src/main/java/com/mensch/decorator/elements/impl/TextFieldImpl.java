@@ -3,38 +3,38 @@ package com.mensch.decorator.elements.impl;
 import com.mensch.decorator.elements.TextField;
 import com.mensch.utils.TestUtils;
 import com.mensch.utils.WaitUtils;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsDriver;
 
 import java.util.concurrent.TimeUnit;
 
 class TextFieldImpl extends AbstractElement implements TextField {
 
-	TestUtils testUtils;
-	WaitUtils waitUtils;
 	TextFieldImpl(final WebElement wrappedElement) {
 		super(wrappedElement);
 	}
 
 	@Override
-	public void clear() {
-		elementClear();
+	public void clear(WebDriver driver) {
+		elementClear(driver);
 	}
 
 	@Override
-	public void clearAndType(final String text) {
-		elementClear();
+	public void clearAndType(final String text, WebDriver driver) {
+		elementClear(driver);
 		sendKeys(text);
 	}
 
 	@Override
-	public String getAttribute(String field) {
-		testUtils.highlightElement(wrappedElement);
+	public String getAttribute(String field, WebDriver driver) {
+		//TestUtils.highlightElement(wrappedElement, driver);
 		return wrappedElement.getAttribute(field);
 	}
 
 	@Override
-	public String getText() {
-		testUtils.highlightElement(wrappedElement);
+	public String getText(WebDriver driver) {
+		//TestUtils.highlightElement(wrappedElement, driver);
 		return wrappedElement.getText();
 	}
 
@@ -43,8 +43,8 @@ class TextFieldImpl extends AbstractElement implements TextField {
 		return wrappedElement.getAttribute("class");
 	}
 
-	private void elementClear() {
-		testUtils.highlightElement(wrappedElement);
+	private void elementClear(WebDriver driver) {
+		//TestUtils.highlightElement(wrappedElement, driver);
 		wrappedElement.clear();
 	}
 
@@ -52,11 +52,8 @@ class TextFieldImpl extends AbstractElement implements TextField {
 		wrappedElement.sendKeys(text);
 	}
 
-	public void waitAndType (final String text) {
-		waitUtils.waitAndType(this, text);
+	public void waitAndType (final String text, WebDriver driver) {
+		WaitUtils.waitAndType(this, text, driver);
 	}
 
-	public void waitAndType (final String text, int timeOut, TimeUnit timeUnit) {
-		waitUtils.waitAndType(this, text, timeOut, timeUnit);
-	}
 }

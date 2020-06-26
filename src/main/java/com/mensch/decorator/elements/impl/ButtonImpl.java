@@ -2,6 +2,7 @@ package com.mensch.decorator.elements.impl;
 
 import com.mensch.decorator.elements.Button;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.concurrent.TimeUnit;
@@ -19,7 +20,7 @@ class ButtonImpl extends AbstractElement implements Button {
     }
 
     @Override
-    public void clickInvisible() {
+    public void clickInvisible(WebDriver driver) {
 
     }
 

@@ -30,7 +30,7 @@ public class IOSEmulatorDriverManager extends DriverManager {
         }
         catch (Exception e) {
             log.error("Driver error");
-            Assert.fail();
+            Assert.fail(e.toString());
         }
     }
 }

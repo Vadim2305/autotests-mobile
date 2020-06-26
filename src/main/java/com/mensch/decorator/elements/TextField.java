@@ -1,20 +1,21 @@
 package com.mensch.decorator.elements;
 
+import org.openqa.selenium.WebDriver;
+
 import java.util.concurrent.TimeUnit;
 
 public interface TextField extends Element {
 
-    void clear();
+    void clear(WebDriver driver);
 
-    String getAttribute(String field);
+    String getAttribute(String field, WebDriver driver);
 
-    String getText();
+    String getText(WebDriver driver);
 
-    void clearAndType(String text);
+    void clearAndType(String text, WebDriver driver);
 
     String getClassName();
 
-    void waitAndType(String text);
+    void waitAndType(String text, WebDriver driver);
 
-    void waitAndType(String text, int timeout, TimeUnit timeUnit);
 }
